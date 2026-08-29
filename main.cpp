@@ -24,7 +24,12 @@ public:
     void setClas(int clas);
 };
 // ================= GETTERS =================
-
+Student::Student()
+{
+    roll = 0;
+    clas = 0;
+    name = "";
+}
 int Student::getRoll()
 {
     return roll;
@@ -56,4 +61,93 @@ void Student::setName(string name)
 void Student::setClas(int clas)
 {
     this->clas = clas;
+}
+class StudentManager
+{
+private:
+    vector<Student> S;
+
+public:
+    void addStudent();
+    void displayAllStudents();
+    void searchStudent();
+    void updateStudent();
+    void deleteStudent();
+    void countStudents();
+
+    void saveToFile();
+    void loadFromFile();
+};
+int main()
+{
+    StudentManager SM ;
+    fstream file ;
+    int ch ;
+    cout << " Student Management System !! " << endl ;
+    do
+    {
+        cout << endl << " 1 --> Add Student " ;
+        cout << endl << " 2 --> Display All Student " ;
+        cout << endl << " 3 --> Search Student " ;
+        cout << endl << " 4 --> Update Student " ;
+        cout << endl << " 5 --> Delete Student " ;
+        cout << endl << " 6 --> Count Student " ;
+        cout << endl << " 7 --> Exit " ;
+        cout << endl << " What You Want To Do Tell Here In Number (1-7) :-- ";
+        cin >> ch ;
+
+        switch(ch)
+        {
+            case 1:
+            {
+                SM.addStudent();
+                break;
+            }
+
+            case 2:
+            {
+                SM.displayAllStudents();
+                break;
+            }
+
+            case 3:
+            {
+                SM.searchStudent();
+                break;
+            }
+
+            case 4:
+            {
+                SM.updateStudent();
+                break;
+            }
+
+            case 5:
+            {
+                SM.deleteStudent();
+                break;
+            }
+
+            case 6:
+            {
+                SM.countStudents();
+                break;
+            }
+
+            case 7:
+            {
+                cout << endl << "Exiting Student Management System..." << endl;
+                break;
+            }
+
+            default:
+            {
+                cout << endl << "Invalid Choice! Please enter a number from 1 to 7." << endl;
+                break;
+            }
+        }
+
+    } while (ch != 7);
+    
+    return 0 ; 
 }
