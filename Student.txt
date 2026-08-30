@@ -1,12 +1,10 @@
+Student Name: Ramesh Agarwal
+Student Roll Number: 37
+Student Class: 11
+Student Scholar Number: 1001
+
 Student Name: Mayank Nahata
 Student Roll Number: 23
 Student Class: 10
-
-Student Name: Gaurav Agal
-Student Roll Number: 41
-Student Class: 5
-
-Student Name: Sumit Agarwal
-Student Roll Number: 32
-Student Class: 12
+Student Scholar Number: 1002
 

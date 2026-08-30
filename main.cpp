@@ -7,7 +7,7 @@ using namespace std;
 class Student
 {
 private:
-    int roll, clas;
+    int roll, clas,scholarNo;
     string name;
 
 public:
@@ -17,11 +17,13 @@ public:
     int getRoll();
     int getClas();
     string getName();
+    int getScholarNo();
 
     // Setters
     void setRoll(int roll);
     void setName(string name);
     void setClas(int clas);
+    void setScholarNo(int scholarNo);
 };
 // ================= GETTERS =================
 Student::Student()
@@ -29,6 +31,11 @@ Student::Student()
     roll = 0;
     clas = 0;
     name = "";
+    scholarNo = 0; 
+}
+int Student::getScholarNo()
+{
+    return scholarNo ;
 }
 int Student::getRoll()
 {
@@ -45,9 +52,12 @@ string Student::getName()
     return name;
 }
 
-
 // ================= SETTERS =================
 
+void Student::setScholarNo(int scholarNo)
+{
+    this->scholarNo = scholarNo ;
+}
 void Student::setRoll(int roll)
 {
     this->roll = roll;
@@ -74,7 +84,7 @@ public:
     void updateStudent();
     void deleteStudent();
     void countStudents();
-
+    int getNextScholarNo();
     void saveToFile(Student &st);
     void loadFromFile();
 };
@@ -95,6 +105,7 @@ void StudentManager :: addStudent()
     st.setName(name);
     st.setClas(clas);
     st.setRoll(roll);
+    st.setScholarNo(getNextScholarNo());
 
     S.push_back(st);
     saveToFile(st);
@@ -106,7 +117,8 @@ void StudentManager::saveToFile(Student &st)
     file.open("Student.txt",ios::app);
     file << "Student Name: " << st.getName() << endl;
     file << "Student Roll Number: " << st.getRoll() << endl ;
-    file << "Student Class: " << st.getClas() << endl << endl ;
+    file << "Student Class: " << st.getClas() << endl  ;
+    file << "Student Scholar Number: " << st.getScholarNo() << endl << endl ;
     file.close();
 
 }
@@ -127,8 +139,76 @@ void StudentManager::displayAllStudents()
     file.close();
 
 }
+int StudentManager::getNextScholarNo()
+{
+    fstream file;
+    file.open("Student.txt", ios::in);
 
+    if(!file)
+    {
+        return 1001;
+    }
 
+    if(file.peek() == EOF)
+    {
+        return 1001;
+    }
+
+    // Go to the end of the file
+    file.seekg(0, ios::end);
+
+    long long pos = file.tellg();
+    char ch;
+
+    // Skip all newline characters at the end
+    do
+    {
+        pos--;
+        file.seekg(pos);
+        file.get(ch);
+
+    } while(pos > 0 && (ch == '\n' || ch == '\r'));
+
+    // Move backward until we find the beginning
+    // of the last line
+    while(pos > 0)
+    {
+        pos--;
+
+        file.seekg(pos);
+        file.get(ch);
+
+        if(ch == '\n' || ch == '\r')
+        {
+            pos++;
+            break;
+        }
+    }
+
+    // Go to beginning of Scholar Number line
+    file.seekg(pos);
+
+    string line;
+    getline(file, line);
+
+    // Extract Scholar Number
+    int p = line.find(":");
+
+    if(p == string::npos)
+    {
+        cout << "Scholar Number line not found!";
+        file.close();
+        return 1001;
+    }
+
+    string scholar = line.substr(p + 2);
+
+    int scholarNo = stoi(scholar);
+
+    file.close();
+
+    return scholarNo + 1;
+}
 int main()
 {
     StudentManager SM ;
