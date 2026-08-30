@@ -75,13 +75,45 @@ public:
     void deleteStudent();
     void countStudents();
 
-    void saveToFile();
+    void saveToFile(Student &st);
     void loadFromFile();
 };
+
+void StudentManager :: addStudent()
+{
+    Student st ;
+    int clas , roll ;
+    string name ;
+    cin.ignore();
+    cout << endl << endl << " Enter The Name Of Student :-- " ;
+    getline(cin,name);
+    cout << endl << " Enter The Roll No. Of Student :-- ";
+    cin >> roll ;
+    cout << endl << " Enter The Class Of Student :-- ";
+    cin >> clas ;
+
+    st.setName(name);
+    st.setClas(clas);
+    st.setRoll(roll);
+
+    S.push_back(st);
+    saveToFile(st);
+}
+void StudentManager::saveToFile(Student &st)
+{
+
+    fstream file ;
+    file.open("Student.txt",ios::app);
+    file << "Student Name: " << st.getName() << endl;
+    file << "Student Roll Number: " << st.getRoll() << endl ;
+    file << "Student Class: " << st.getClas() << endl << endl ;
+    file.close();
+
+}
+
 int main()
 {
     StudentManager SM ;
-    fstream file ;
     int ch ;
     cout << " Student Management System !! " << endl ;
     do
@@ -106,31 +138,31 @@ int main()
 
             case 2:
             {
-                SM.displayAllStudents();
+                //SM.displayAllStudents();
                 break;
             }
 
             case 3:
             {
-                SM.searchStudent();
+                //SM.searchStudent();
                 break;
             }
 
             case 4:
             {
-                SM.updateStudent();
+                //SM.updateStudent();
                 break;
             }
 
             case 5:
             {
-                SM.deleteStudent();
+                //SM.deleteStudent();
                 break;
             }
 
             case 6:
             {
-                SM.countStudents();
+                //SM.countStudents();
                 break;
             }
 
