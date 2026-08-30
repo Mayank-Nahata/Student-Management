@@ -110,6 +110,24 @@ void StudentManager::saveToFile(Student &st)
     file.close();
 
 }
+void StudentManager::displayAllStudents()
+{
+    fstream file ;
+    file.open("Student.txt",ios::in);
+    if(!file)
+    {
+        cout << " File Not Found !! " ;
+    }
+    cout << endl << endl ;
+    string line ;
+    while(getline(file,line))
+    {
+        cout << line << endl ;
+    }
+    file.close();
+
+}
+
 
 int main()
 {
@@ -138,7 +156,7 @@ int main()
 
             case 2:
             {
-                //SM.displayAllStudents();
+                SM.displayAllStudents();
                 break;
             }
 
