@@ -209,6 +209,85 @@ int StudentManager::getNextScholarNo()
 
     return scholarNo + 1;
 }
+void StudentManager::searchStudent()
+{
+    fstream file;
+    string line;
+    int sn;
+
+    bool f = false;
+
+    cout << " Enter The Scholar Number Of Student :-- ";
+    cin >> sn;
+
+    file.open("Student.txt", ios::in);
+
+    if(!file)
+    {
+        cout << " File Not Found ! " << endl;
+        return;
+    }
+
+    if(file.peek() == EOF)
+    {
+        cout << " The File Does Not Contain Any Student Detail's " << endl;
+        return;
+    }
+
+    int pos;
+    int clas, roll;
+    string name;
+
+    while(getline(file, line))
+    {
+        if(line.find("Name") != string::npos)
+        {
+            pos = line.find(":");
+            name = line.substr(pos + 2);
+        }
+
+        if(line.find("Roll") != string::npos)
+        {
+            pos = line.find(":");
+            roll = stoi(line.substr(pos + 2));
+        }
+
+        if(line.find("Class") != string::npos)
+        {
+            pos = line.find(":");
+            clas = stoi(line.substr(pos + 2));
+        }
+
+        if(line.find("Scholar Number") != string::npos)
+        {
+            pos = line.find(":");
+
+            int SN = stoi(line.substr(pos + 2));
+
+            if(SN == sn)
+            {
+                f = true;
+
+                cout << endl << " Student Found !" << endl;
+                cout << " Student Name :-- " << name << endl;
+                cout << " Student Roll Number :-- " << roll << endl;
+                cout << " Student Class :-- " << clas << endl;
+                cout << " Student Scholar Number :-- " << SN << endl << endl;
+
+                break;
+            }
+        }
+    }
+    if(!f)
+    {
+        cout << endl
+             << " Student Of Scholar Number "
+             << sn
+             << " Not Found !"
+             << endl << endl;
+    }
+    file.close();
+}
 int main()
 {
     StudentManager SM ;
@@ -242,7 +321,7 @@ int main()
 
             case 3:
             {
-                //SM.searchStudent();
+                SM.searchStudent();
                 break;
             }
 
