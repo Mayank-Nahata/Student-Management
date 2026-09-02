@@ -2,6 +2,7 @@
 #include<fstream>
 #include<vector>
 #include<string>
+#include <cstdio>
 using namespace std;
 
 class Student
@@ -84,9 +85,13 @@ public:
     void updateStudent();
     void deleteStudent();
     void countStudents();
+
     int getNextScholarNo();
+
     void saveToFile(Student &st);
     void loadFromFile();
+
+    bool findStudent(int scholarNo, Student &st);
 };
 
 void StudentManager :: addStudent()
@@ -209,76 +214,93 @@ int StudentManager::getNextScholarNo()
 
     return scholarNo + 1;
 }
-void StudentManager::searchStudent()
+bool StudentManager::findStudent(int scholarNo, Student &st)
 {
     fstream file;
-    string line;
-    int sn;
-
-    bool f = false;
-
-    cout << " Enter The Scholar Number Of Student :-- ";
-    cin >> sn;
-
     file.open("Student.txt", ios::in);
 
     if(!file)
     {
-        cout << " File Not Found ! " << endl;
-        return;
+        return false;
     }
 
-    if(file.peek() == EOF)
-    {
-        cout << " The File Does Not Contain Any Student Detail's " << endl;
-        return;
-    }
-
-    int pos;
-    int clas, roll;
-    string name;
+    string line;
 
     while(getline(file, line))
     {
-        if(line.find("Name") != string::npos)
+        if(line.find("Student Name") != string::npos)
         {
-            pos = line.find(":");
-            name = line.substr(pos + 2);
+            int pos = line.find(":");
+            st.setName(line.substr(pos + 2));
         }
 
-        if(line.find("Roll") != string::npos)
+        getline(file, line);
+
+        if(line.find("Student Roll Number") != string::npos)
         {
-            pos = line.find(":");
-            roll = stoi(line.substr(pos + 2));
+            int pos = line.find(":");
+            st.setRoll(stoi(line.substr(pos + 2)));
         }
 
-        if(line.find("Class") != string::npos)
+        getline(file, line);
+
+        if(line.find("Student Class") != string::npos)
         {
-            pos = line.find(":");
-            clas = stoi(line.substr(pos + 2));
+            int pos = line.find(":");
+            st.setClas(stoi(line.substr(pos + 2)));
         }
 
-        if(line.find("Scholar Number") != string::npos)
+        getline(file, line);
+
+        if(line.find("Student Scholar Number") != string::npos)
         {
-            pos = line.find(":");
+            int pos = line.find(":");
 
             int SN = stoi(line.substr(pos + 2));
 
-            if(SN == sn)
+            st.setScholarNo(SN);
+
+            if(SN == scholarNo)
             {
-                f = true;
-
-                cout << endl << " Student Found !" << endl;
-                cout << " Student Name :-- " << name << endl;
-                cout << " Student Roll Number :-- " << roll << endl;
-                cout << " Student Class :-- " << clas << endl;
-                cout << " Student Scholar Number :-- " << SN << endl << endl;
-
-                break;
+                file.close();
+                return true;
             }
         }
+
+        // Skip blank line
+        getline(file, line);
     }
-    if(!f)
+
+    file.close();
+
+    return false;
+}
+void StudentManager::searchStudent()
+{
+    int sn;
+
+    cout << " Enter The Scholar Number Of Student :-- ";
+    cin >> sn;
+
+    Student st;
+
+    if(findStudent(sn, st))
+    {
+        cout << endl << " Student Found !" << endl;
+
+        cout << " Student Name :-- "
+             << st.getName() << endl;
+
+        cout << " Student Roll Number :-- "
+             << st.getRoll() << endl;
+
+        cout << " Student Class :-- "
+             << st.getClas() << endl;
+
+        cout << " Student Scholar Number :-- "
+             << st.getScholarNo() << endl << endl;
+    }
+    else
     {
         cout << endl
              << " Student Of Scholar Number "
@@ -286,7 +308,208 @@ void StudentManager::searchStudent()
              << " Not Found !"
              << endl << endl;
     }
+}
+void StudentManager::updateStudent()
+{
+    int searchScholar;
+
+    cout << " Enter The Scholar Number Of Student :-- ";
+    cin >> searchScholar;
+
+    Student st;
+
+    if(!findStudent(searchScholar, st))
+    {
+        cout << endl
+             << " Student Of Scholar Number "
+             << searchScholar
+             << " Not Found !"
+             << endl << endl;
+
+        return;
+    }
+
+    cout << endl << " Student Found !" << endl;
+
+    cout << " Current Details :" << endl;
+
+    cout << " Student Name :-- "
+         << st.getName() << endl;
+
+    cout << " Student Roll Number :-- "
+         << st.getRoll() << endl;
+
+    cout << " Student Class :-- "
+         << st.getClas() << endl;
+
+    cout << " Student Scholar Number :-- "
+         << st.getScholarNo() << endl;
+
+
+    int choice;
+
+    cout << endl;
+    cout << " What Do You Want To Update ?" << endl;
+    cout << " 1 --> Name" << endl;
+    cout << " 2 --> Roll Number" << endl;
+    cout << " 3 --> Class" << endl;
+    cout << " 4 --> All Details" << endl;
+    cout << " 5 --> Cancel" << endl;
+
+    cout << " Enter Your Choice :-- ";
+    cin >> choice;
+
+
+    if(choice == 1)
+    {
+        string name;
+
+        cin.ignore();
+
+        cout << " Enter New Name :-- ";
+        getline(cin, name);
+
+        st.setName(name);
+    }
+
+    else if(choice == 2)
+    {
+        int roll;
+
+        cout << " Enter New Roll Number :-- ";
+        cin >> roll;
+
+        st.setRoll(roll);
+    }
+
+    else if(choice == 3)
+    {
+        int clas;
+
+        cout << " Enter New Class :-- ";
+        cin >> clas;
+
+        st.setClas(clas);
+    }
+
+    else if(choice == 4)
+    {
+        string name;
+        int roll, clas;
+
+        cin.ignore();
+
+        cout << " Enter New Name :-- ";
+        getline(cin, name);
+
+        cout << " Enter New Roll Number :-- ";
+        cin >> roll;
+
+        cout << " Enter New Class :-- ";
+        cin >> clas;
+
+        st.setName(name);
+        st.setRoll(roll);
+        st.setClas(clas);
+    }
+
+    else if(choice == 5)
+    {
+        cout << endl << " Update Cancelled !" << endl << endl;
+        return;
+    }
+
+    else
+    {
+        cout << endl << " Invalid Choice !" << endl << endl;
+        return;
+    }
+
+
+    // Open original file
+    fstream file;
+    file.open("Student.txt", ios::in);
+
+    if(!file)
+    {
+        cout << " File Not Found !" << endl;
+        return;
+    }
+
+
+    // Open temporary file
+    fstream temp;
+    temp.open("Temp.txt", ios::out);
+
+    if(!temp)
+    {
+        cout << " Unable To Create Temporary File !" << endl;
+        file.close();
+        return;
+    }
+
+
+    string line;
+
+    while(getline(file, line))
+    {
+        // Read Name
+        string name = line.substr(line.find(":") + 2);
+
+        // Read Roll
+        getline(file, line);
+        int roll = stoi(line.substr(line.find(":") + 2));
+
+        // Read Class
+        getline(file, line);
+        int clas = stoi(line.substr(line.find(":") + 2));
+
+        // Read Scholar Number
+        getline(file, line);
+        int scholarNo = stoi(line.substr(line.find(":") + 2));
+
+        // Skip blank line
+        getline(file, line);
+
+
+        // Check whether this is the student we want
+        if(scholarNo == searchScholar)
+        {
+            temp << "Student Name: " << st.getName() << endl;
+            temp << "Student Roll Number: " << st.getRoll() << endl;
+            temp << "Student Class: " << st.getClas() << endl;
+            temp << "Student Scholar Number: " << st.getScholarNo()
+                 << endl << endl;
+        }
+        else
+        {
+            // Write unchanged student
+            temp << "Student Name: " << name << endl;
+            temp << "Student Roll Number: " << roll << endl;
+            temp << "Student Class: " << clas << endl;
+            temp << "Student Scholar Number: " << scholarNo
+                 << endl << endl;
+        }
+    }
+
+
     file.close();
+    temp.close();
+
+
+    // Replace old file with new file
+    remove("Student.txt");
+
+    if(rename("Temp.txt", "Student.txt") != 0)
+    {
+        cout << " Error Renaming Temporary File !" << endl;
+        return;
+    }
+
+
+    cout << endl
+         << " Student Details Updated Successfully !"
+         << endl << endl;
 }
 int main()
 {
@@ -327,7 +550,7 @@ int main()
 
             case 4:
             {
-                //SM.updateStudent();
+                SM.updateStudent();
                 break;
             }
 
